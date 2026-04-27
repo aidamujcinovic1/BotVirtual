@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration  status="debug">
+    <Properties>
+        <Property name="basePath">${sys:catalina.base}/logs</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="RollingFile"
+                     fileName="${basePath}/ucb-ws.log"
+                     filePattern="${basePath}/archive/ucb-ws-%d{yyyy-MM}.log.zip"
+                     append="true"
+                     immediateFlush="true"
+                     createOnDemand="true">
+
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1.} - %m%n" />
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+
+            <DefaultRolloverStrategy max="12">
+                <Delete basePath="${basePath}/archive" maxDepth="1">
+                    <IfFileName glob="ucb-ws-*.log.zip" />
+                    <IfLastModified age="365d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+
+        </RollingFile>
+
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{1} - %m%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="ucb.demo" level="debug" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Root level="debug">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
